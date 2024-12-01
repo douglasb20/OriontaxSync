@@ -138,7 +138,7 @@
             this.btnSendProd.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.btnSendProd.IconSize = 25;
             this.btnSendProd.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnSendProd.Location = new System.Drawing.Point(74, 75);
+            this.btnSendProd.Location = new System.Drawing.Point(74, 63);
             this.btnSendProd.Name = "btnSendProd";
             this.btnSendProd.Size = new System.Drawing.Size(140, 30);
             this.btnSendProd.TabIndex = 22;
@@ -159,13 +159,14 @@
             this.btnReceiveProd.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.btnReceiveProd.IconSize = 25;
             this.btnReceiveProd.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnReceiveProd.Location = new System.Drawing.Point(74, 120);
+            this.btnReceiveProd.Location = new System.Drawing.Point(74, 108);
             this.btnReceiveProd.Name = "btnReceiveProd";
             this.btnReceiveProd.Size = new System.Drawing.Size(140, 30);
             this.btnReceiveProd.TabIndex = 23;
             this.btnReceiveProd.Text = "        Receber Produtos";
             this.btnReceiveProd.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnReceiveProd.UseVisualStyleBackColor = false;
+            this.btnReceiveProd.Click += new System.EventHandler(this.btnReceiveProd_Click);
             // 
             // tmr
             // 
@@ -176,7 +177,7 @@
             // 
             this.lblData.AutoSize = true;
             this.lblData.ForeColor = System.Drawing.SystemColors.Control;
-            this.lblData.Location = new System.Drawing.Point(71, 171);
+            this.lblData.Location = new System.Drawing.Point(71, 159);
             this.lblData.Name = "lblData";
             this.lblData.Size = new System.Drawing.Size(35, 13);
             this.lblData.TabIndex = 24;
@@ -186,7 +187,7 @@
             // 
             this.lblAcao.AutoSize = true;
             this.lblAcao.ForeColor = System.Drawing.SystemColors.Control;
-            this.lblAcao.Location = new System.Drawing.Point(71, 158);
+            this.lblAcao.Location = new System.Drawing.Point(71, 146);
             this.lblAcao.Name = "lblAcao";
             this.lblAcao.Size = new System.Drawing.Size(35, 13);
             this.lblAcao.TabIndex = 25;
@@ -213,6 +214,7 @@
             this.Text = "Form1";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmMain_FormClosed);
             this.Load += new System.EventHandler(this.frmMain_Load);
+            this.Shown += new System.EventHandler(this.frmMain_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

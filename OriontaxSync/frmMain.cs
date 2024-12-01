@@ -1,12 +1,16 @@
 ﻿using OriontaxSync.libs;
-using System.Collections.Generic;
+using OriontaxSync.Classes;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Text.Json;
 using System.Windows.Forms;
+using System.Threading.Tasks;
+using System.Net.Http;
+using System.Threading;
 
 namespace OriontaxSync
 {
@@ -14,11 +18,20 @@ namespace OriontaxSync
     {
         private NotifyIcon notifyIcon;
         private ContextMenuStrip contextMenu;
-        public static Dictionary<string, string> config;
+        public Dictionary<string, string> config;
         public static string caminho = Path.GetDirectoryName(Application.ExecutablePath);
         public static string fileConfig = "config.conf";
         public static string pathConfig = Path.Combine(caminho, fileConfig);
         public string titulo = ConfigurationManager.AppSettings["appTitle"];
+
+        public frmMain()
+        {
+            InitializeComponent();
+            InitializeSystray();
+            this.Paint += new PaintEventHandler(Element_Paint);
+            this.Opacity = 0;
+        }
+
         private void InitializeSystray()
         {
             // Criar o ícone de notificação
@@ -46,6 +59,7 @@ namespace OriontaxSync
             this.Show();
             this.WindowState = FormWindowState.Normal; // Restaura o estado da janela
             notifyIcon.Visible = false;
+            this.Opacity = 1;
         }
 
         // Sobrescrever o evento de fechamento do formulário
@@ -60,17 +74,35 @@ namespace OriontaxSync
             base.OnFormClosing(e);
         }
 
+        private async Task TesteApi()
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                // URL da API
+                string url = "https://jsonplaceholder.typicode.com/posts";
+
+                // Fazer a requisição GET
+                HttpResponseMessage response = await client.GetAsync(url);
+
+                // Garantir que a requisição foi bem-sucedida
+                response.EnsureSuccessStatusCode();
+
+                // Ler o conteúdo como string
+                string responseData = await response.Content.ReadAsStringAsync();
+
+                List<ResponseApi> posts = JsonSerializer.Deserialize<List<ResponseApi>>(responseData);
+
+                // Mostrar o resultado
+                Console.WriteLine(responseData);
+
+            }
+        }
+
         // Fechar o aplicativo
         private void ExitApp(object sender, EventArgs e)
         {
             notifyIcon.Visible = false; // Remove o ícone do tray
             Application.Exit();
-        }
-        public frmMain()
-        {
-            InitializeComponent();
-            InitializeSystray();
-            this.Paint += new PaintEventHandler(Element_Paint);
         }
 
         private void Element_Paint(object sender, PaintEventArgs e)
@@ -93,6 +125,7 @@ namespace OriontaxSync
         {
             try
             {
+                notifyIcon.Visible = true;
                 ConfigReader.LoadConfig(pathConfig);
                 lblTopBar.Text = "  " + titulo + " | OrintaxSync";
                 this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
@@ -101,6 +134,7 @@ namespace OriontaxSync
                 string horaAtual = DateTime.Now.ToString("HH:mm:ss");
                 lblAcao.Text = "Últ. ação: " + ConfigReader.GetConfigValue("Log", "ultima_acao");
                 lblData.Text = "Data ação: " + ConfigReader.GetConfigValue("Log", "data_acao");
+
 
             }
             catch (Exception ex)
@@ -164,6 +198,23 @@ namespace OriontaxSync
         {
             frmConfig frmConfig = new frmConfig();
             frmConfig.ShowDialog();
+        }
+
+        private void frmMain_Shown(object sender, EventArgs e)
+        {
+            this.Hide();
+        }
+
+        private async void btnReceiveProd_Click(object sender, EventArgs e)
+        {
+            Button bt = (Button)sender;
+            string originalText = bt.Text;
+            bt.Text = "        Aguarde...";
+            bt.Enabled = false;
+            await Task.Delay(3000);
+            await TesteApi();
+            bt.Text = originalText;
+            bt.Enabled = true;
         }
     }
 }
