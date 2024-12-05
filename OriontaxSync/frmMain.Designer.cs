@@ -39,6 +39,7 @@
             this.tmr = new System.Windows.Forms.Timer(this.components);
             this.lblData = new System.Windows.Forms.Label();
             this.lblAcao = new System.Windows.Forms.Label();
+            this.lblInfo = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lblTopBar
@@ -103,7 +104,7 @@
             // 
             this.lblVersion.AutoSize = true;
             this.lblVersion.ForeColor = System.Drawing.SystemColors.Control;
-            this.lblVersion.Location = new System.Drawing.Point(2, 226);
+            this.lblVersion.Location = new System.Drawing.Point(2, 276);
             this.lblVersion.Name = "lblVersion";
             this.lblVersion.Size = new System.Drawing.Size(41, 13);
             this.lblVersion.TabIndex = 20;
@@ -118,7 +119,7 @@
             this.btnConfig.IconColor = System.Drawing.Color.White;
             this.btnConfig.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.btnConfig.IconSize = 25;
-            this.btnConfig.Location = new System.Drawing.Point(237, 204);
+            this.btnConfig.Location = new System.Drawing.Point(237, 251);
             this.btnConfig.Name = "btnConfig";
             this.btnConfig.Padding = new System.Windows.Forms.Padding(2, 2, 0, 0);
             this.btnConfig.Size = new System.Drawing.Size(35, 35);
@@ -193,12 +194,23 @@
             this.lblAcao.TabIndex = 25;
             this.lblAcao.Text = "label1";
             // 
+            // lblInfo
+            // 
+            this.lblInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblInfo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.lblInfo.Location = new System.Drawing.Point(3, 187);
+            this.lblInfo.Name = "lblInfo";
+            this.lblInfo.Size = new System.Drawing.Size(280, 61);
+            this.lblInfo.TabIndex = 26;
+            this.lblInfo.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(19)))), ((int)(((byte)(37)))), ((int)(((byte)(42)))));
-            this.ClientSize = new System.Drawing.Size(284, 244);
+            this.ClientSize = new System.Drawing.Size(284, 298);
+            this.Controls.Add(this.lblInfo);
             this.Controls.Add(this.lblAcao);
             this.Controls.Add(this.lblData);
             this.Controls.Add(this.btnReceiveProd);
@@ -231,6 +243,7 @@
         private System.Windows.Forms.Timer tmr;
         private System.Windows.Forms.Label lblData;
         private System.Windows.Forms.Label lblAcao;
+        private System.Windows.Forms.Label lblInfo;
     }
 }
 

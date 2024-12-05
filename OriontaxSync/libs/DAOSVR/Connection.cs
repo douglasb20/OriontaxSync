@@ -3,7 +3,7 @@ using Microsoft.Data.SqlClient;
 
 namespace OriontaxSync.libs
 {
-    internal class Connection
+    static class Connection
     {
         public static SqlConnection con;
         public static SqlTransaction transaction;
@@ -14,7 +14,7 @@ namespace OriontaxSync.libs
             string password = ConfigReader.GetConfigValue("Database", "dbpwd");
 
 
-            con = new SqlConnection(string.Format(@"Data Source={0};Initial Catalog=Etrade; User ID={1};Password={2};TrustServerCertificate=True;Connect Timeout=10;", host, dbuser, password));
+            con = new SqlConnection(string.Format(@"Data Source={0};Initial Catalog=Etrade; User ID={1};Password={2};TrustServerCertificate=True;", host, dbuser, password));
             con.Open();
         }
         public static void ReConnect()
@@ -30,9 +30,8 @@ namespace OriontaxSync.libs
         {
             try
             {
-                con = new SqlConnection(string.Format(@"Data Source={0};Initial Catalog=Etrade; User ID={1};Password={2};TrustServerCertificate=True;Connect Timeout=10;", host, user, pwd));
+                con = new SqlConnection(string.Format(@"Data Source={0};Initial Catalog=Etrade; User ID={1};Password={2};TrustServerCertificate=True;", host, user, pwd));
                 con.Open();
-                Close();
 
             }catch(SqlException ex)
             {

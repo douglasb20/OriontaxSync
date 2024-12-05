@@ -9,8 +9,7 @@ namespace OriontaxSync.libs
     {
         private static ConfigParser config;
         private static string filePath;
-        public static string sistema = string.Empty;
-        public static string tipoImportacao = string.Empty;
+        public static string base_url = @"https://oriontax.f5sys.com.br/api/v1/test";
 
         public static void LoadConfig(string fileName)
         {

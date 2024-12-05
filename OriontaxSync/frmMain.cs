@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Threading;
+using OriontaxSync.libs.DAOSVR;
 
 namespace OriontaxSync
 {
@@ -74,30 +75,6 @@ namespace OriontaxSync
             base.OnFormClosing(e);
         }
 
-        private async Task TesteApi()
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                // URL da API
-                string url = "https://jsonplaceholder.typicode.com/posts";
-
-                // Fazer a requisição GET
-                HttpResponseMessage response = await client.GetAsync(url);
-
-                // Garantir que a requisição foi bem-sucedida
-                response.EnsureSuccessStatusCode();
-
-                // Ler o conteúdo como string
-                string responseData = await response.Content.ReadAsStringAsync();
-
-                List<ResponseApi> posts = JsonSerializer.Deserialize<List<ResponseApi>>(responseData);
-
-                // Mostrar o resultado
-                Console.WriteLine(responseData);
-
-            }
-        }
-
         // Fechar o aplicativo
         private void ExitApp(object sender, EventArgs e)
         {
@@ -134,7 +111,7 @@ namespace OriontaxSync
                 string horaAtual = DateTime.Now.ToString("HH:mm:ss");
                 lblAcao.Text = "Últ. ação: " + ConfigReader.GetConfigValue("Log", "ultima_acao");
                 lblData.Text = "Data ação: " + ConfigReader.GetConfigValue("Log", "data_acao");
-
+                Connection.Connect();
 
             }
             catch (Exception ex)
@@ -184,14 +161,28 @@ namespace OriontaxSync
             //lblData.Text = horaAtual;
         }
 
-        private void btnSendProd_Click(object sender, EventArgs e)
+        private async void btnSendProd_Click(object sender, EventArgs e)
         {
-            string dataUltAcao = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-            ConfigReader.SetConfigValue("Log", "data_acao", dataUltAcao);
-            ConfigReader.SaveConfig();
-            lblAcao.Text = "Últ. ação: " + ConfigReader.GetConfigValue("Log", "ultima_acao");
-            lblData.Text = "Data ação: " + dataUltAcao;
-            
+            try
+            {
+                Button bt = (Button)sender;
+                string originalText = bt.Text;
+                bt.Text = "        Aguarde...";
+                bt.Enabled = false;
+
+                await ProdutosApi.TratarProdutosEnviados(lblInfo, true);
+                bt.Text = originalText;
+                bt.Enabled = true;
+
+                tmr.Interval = 5000;
+                tmr.Tick += LimpaLabel;
+                tmr.Start();
+            }
+
+            catch (Exception ex)
+            {
+                Funcoes.ErrorMessage(ex.Message);
+            }
         }
 
         private void btnConfig_Click(object sender, EventArgs e)
@@ -205,16 +196,33 @@ namespace OriontaxSync
             this.Hide();
         }
 
+        private void LimpaLabel(object sender, EventArgs e)
+        {
+            System.Windows.Forms.Timer tmr1 = (System.Windows.Forms.Timer)sender;
+            lblInfo.Text = "";
+            tmr1.Stop();
+        }
+
         private async void btnReceiveProd_Click(object sender, EventArgs e)
         {
+            if (ConfigReader.GetConfigValue("Sistema", "token") == String.Empty)
+            {
+                Funcoes.ErrorMessage("Nenhum token foi definido nas configurações");
+                return;
+            }
+
             Button bt = (Button)sender;
             string originalText = bt.Text;
             bt.Text = "        Aguarde...";
             bt.Enabled = false;
-            await Task.Delay(3000);
-            await TesteApi();
+            List<ProdutosApi> produtos = await ProdutosApi.TratarProdutosRecebidos(lblInfo);
+
             bt.Text = originalText;
             bt.Enabled = true;
+
+            tmr.Interval = 5000;
+            tmr.Tick += LimpaLabel;
+            tmr.Start();
         }
     }
 }

@@ -167,7 +167,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\ResponseApi.cs" />
+    <Compile Include="Classes\LoggingHandler.cs" />
+    <Compile Include="Classes\ProdutosBanco .cs" />
+    <Compile Include="Classes\ProdutosApi.cs" />
     <Compile Include="frmConfig.cs">
       <SubType>Form</SubType>
     </Compile>
