@@ -69,7 +69,7 @@ namespace OriontaxSync.libs.DAOSVR
                         CofinsPerc = row.Field<decimal>("cofins_perc"),
                         CodClasse = row.Field<int>("cod_classe"),
                         ClasseImposto = row.Field<string>("classe_imposto"),
-                        Ide = row.Field<Guid>("ide").ToString()
+                        Ide = row.Field<Guid>("ide")
                     })
                     .ToList();
 

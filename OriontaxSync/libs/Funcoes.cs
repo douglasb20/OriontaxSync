@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -136,6 +137,44 @@ namespace OriontaxSync.libs
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+
+        public static decimal? ConvertToDecimal(object value)
+        {
+            // Define a cultura invariante (usa ponto como separador decimal)
+            var culture = CultureInfo.InvariantCulture;
+
+            if (value == null || (value is string strValue && string.IsNullOrWhiteSpace(strValue)))
+                return 0.0M;
+
+            try
+            {
+                // Se for uma string, tenta converter usando a cultura invariante
+                if (value is string str)
+                {
+                    // Substitui vírgula por ponto para garantir consistência
+                    str = str.Replace(",", ".");
+                    return decimal.TryParse(str, NumberStyles.Float, culture, out var result) ? result : 0.0M;
+                }
+
+                // Se já for decimal, apenas retorna
+                if (value is decimal decimalValue)
+                {
+                    return decimalValue;
+                }
+
+                // Tenta converter outros tipos numéricos
+                if (value is IConvertible)
+                {
+                    return Convert.ToDecimal(value, culture);
+                }
+
+                return 0.0M;
+            }
+            catch
+            {
+                return 0.0M;
             }
         }
 

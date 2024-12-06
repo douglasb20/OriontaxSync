@@ -54,6 +54,6 @@ namespace OriontaxSync.Classes
         public string ClasseImposto { get; set; }
 
         [JsonPropertyName("ide")]
-        public string Ide { get; set; }
+        public Guid Ide { get; set; }
     }
 }

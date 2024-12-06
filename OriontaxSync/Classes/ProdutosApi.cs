@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 namespace OriontaxSync.Classes
 {
@@ -35,10 +36,10 @@ namespace OriontaxSync.Classes
         public int IcmsCst { get; set; }
 
         [JsonPropertyName("icms_aliquota")]
-        public object IcmsAliquota { get; set; }
+        public decimal? IcmsAliquota { get; set; }
 
         [JsonPropertyName("icms_aliquota_reduzida")]
-        public object IcmsAliquotaReduzida { get; set; }
+        public decimal? IcmsAliquotaReduzida { get; set; }
 
         [JsonPropertyName("redbcde")]
         public object RedBcDe { get; set; }
@@ -56,18 +57,18 @@ namespace OriontaxSync.Classes
         public string PisCst { get; set; }
 
         [JsonPropertyName("pis_aliquota")]
-        public object PisAliquota { get; set; }
+        public decimal PisAliquota { get; set; }
 
         [JsonPropertyName("cofins_cst")]
         public string CofinsCst { get; set; }
 
         [JsonPropertyName("cofins_aliquota")]
-        public double CofinsAliquota { get; set; }
+        public decimal CofinsAliquota { get; set; }
 
         [JsonPropertyName("natureza_receita")]
-        public object NaturezaReceita { get; set; }
+        public string NaturezaReceita { get; set; }
 
-        public static async Task<List<ProdutosApi>> TratarProdutosRecebidos(Label lblInfo)
+        public static async Task TratarProdutosRecebidos(Label lblInfo, bool temAlerta = false)
         {
             try
             {
@@ -77,35 +78,73 @@ namespace OriontaxSync.Classes
                     client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"Bearer {ConfigReader.GetConfigValue("Sistema", "token")}");
 
                     lblInfo.Text = "Chamando Api da Oriontax...";
-                    await Task.Delay(500);
+                    await Task.Delay(100);
                     // Fazer a requisição GET
                     HttpResponseMessage response = await client.GetAsync($"{ConfigReader.base_url}/receber/");
                     lblInfo.Text = "Recebendo Resposta...";
-                    await Task.Delay(500);
+                    await Task.Delay(100);
                     // Garantir que a requisição foi bem-sucedida
                     response.EnsureSuccessStatusCode();
 
                     // Ler o conteúdo como string
                     string responseData = await response.Content.ReadAsStringAsync();
                     lblInfo.Text = "Lendo produtos";
-                    await Task.Delay(500);
+                    await Task.Delay(100);
+
                     List<ProdutosApi> produtosApi = JsonSerializer.Deserialize<List<ProdutosApi>>(responseData);
+                    foreach (var produto in produtosApi)
+                    {
+                        // Converter os valores para decimal, se possível
+                        produto.RedBcDe = Funcoes.ConvertToDecimal(produto.RedBcDe);
+                        produto.RedBcPara = Funcoes.ConvertToDecimal(produto.RedBcPara);
+                    }
+
                     lblInfo.Text = $"Recebido {produtosApi.Count} produtos.";
+                    await Task.Delay(100);
+
+                    int i = 1;
+                    foreach (ProdutosApi prod in produtosApi)
+                    {
+                        try
+                        {
+                            if (i == 3) break;
+                            string title = $"Ajustando produto {i} de {produtosApi.Count}\r\n";
+                            lblInfo.Text = title + "Atualizando produto";
+                            await Task.Delay(10);
+                            ClasseImpostoDAO classeImpostoDAO = new ClasseImpostoDAO();
+                            ClasseImpostoDAO ret =  classeImpostoDAO.GetClasseImposto(prod);
+
+                            string json = JsonSerializer.Serialize(ret, new JsonSerializerOptions { WriteIndented = true });
+                            Console.WriteLine(json);
+
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Erro ao processar produto {i}: {ex.Message}");
+                            continue;
+                        }
+                        finally
+                        {
+                            i++;
+                        }
+                    }
+
+                    lblInfo.Text = "Finalizado...";
+                    await Task.Delay(100);
                     // Mostrar o resultado
-                    return produtosApi;
                 }
             }
             catch (HttpRequestException ex)
             {
-                Funcoes.ErrorMessage($"{ex.Message}");
                 lblInfo.Text = "";
-                return null;
+                if (temAlerta) Funcoes.ErrorMessage(ex.Message);
+                Logger.Log(ex.Message, "Erro");
             }
             catch (Exception ex)
             {
-                Funcoes.ErrorMessage($"{ex.Message}");
                 lblInfo.Text = "";
-                return null;
+                if (temAlerta) Funcoes.ErrorMessage(ex.Message);
+                Logger.Log(ex.Message, "Erro");
             }
         }
 
@@ -143,15 +182,15 @@ namespace OriontaxSync.Classes
                             IcmsCst = produtoBanco.CstCsosn,
                             IcmsAliquota = produtoBanco.IcmsAliq,
                             IcmsAliquotaReduzida = produtoBanco.RedIcms,
-                            RedBcDe = 0, // Valor padrão
-                            RedBcPara = 100, // Valor padrão
+                            RedBcDe = "0.0", // Valor padrão
+                            RedBcPara = "100", // Valor padrão
                             CBenef = string.Empty, // Valor padrão
                             Protege = 0, // Valor padrão
                             PisCst = produtoBanco.PisCofinsCst,
                             PisAliquota = produtoBanco.PisPerc,
                             CofinsCst = produtoBanco.PisCofinsCst,
-                            CofinsAliquota = (double)produtoBanco.CofinsPerc,
-                            NaturezaReceita = 101 // Valor padrão
+                            CofinsAliquota = produtoBanco.CofinsPerc,
+                            NaturezaReceita = "101" // Valor padrão
                         };
 
                         produtosApi.Add(prodApi);
@@ -172,21 +211,22 @@ namespace OriontaxSync.Classes
                     // Garantir que a requisição foi bem-sucedida
                     response.EnsureSuccessStatusCode();
                     lblInfo.Text = "Finalizado!";
-                    
-                    if(temAlerta) Funcoes.ChamaAlerta("Produtos enviados com sucesso");
+
+                    if (temAlerta) Funcoes.ChamaAlerta("Produtos enviados com sucesso");
 
                 }
-
             }
             catch (HttpRequestException ex)
             {
                 lblInfo.Text = "";
-                Funcoes.ErrorMessage($"{ex.Message}");
+                if (temAlerta) Funcoes.ErrorMessage(ex.Message);
+                Logger.Log(ex.Message, "Erro");
             }
             catch (Exception ex)
             {
                 lblInfo.Text = "";
-                Funcoes.ErrorMessage($"{ex.Message}");
+                if (temAlerta) Funcoes.ErrorMessage(ex.Message);
+                Logger.Log(ex.Message, "Erro");
             }
         }
     }

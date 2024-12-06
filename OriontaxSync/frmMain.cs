@@ -112,6 +112,7 @@ namespace OriontaxSync
                 lblAcao.Text = "Últ. ação: " + ConfigReader.GetConfigValue("Log", "ultima_acao");
                 lblData.Text = "Data ação: " + ConfigReader.GetConfigValue("Log", "data_acao");
                 Connection.Connect();
+                Logger.Log("Teste");
 
             }
             catch (Exception ex)
@@ -215,7 +216,7 @@ namespace OriontaxSync
             string originalText = bt.Text;
             bt.Text = "        Aguarde...";
             bt.Enabled = false;
-            List<ProdutosApi> produtos = await ProdutosApi.TratarProdutosRecebidos(lblInfo);
+            await ProdutosApi.TratarProdutosRecebidos(lblInfo, true);
 
             bt.Text = originalText;
             bt.Enabled = true;
