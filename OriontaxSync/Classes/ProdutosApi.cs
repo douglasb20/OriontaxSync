@@ -2,13 +2,14 @@
 using OriontaxSync.libs.DAOSVR;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
+
 
 namespace OriontaxSync.Classes
 {
@@ -102,20 +103,33 @@ namespace OriontaxSync.Classes
                     lblInfo.Text = $"Recebido {produtosApi.Count} produtos.";
                     await Task.Delay(100);
 
-                    int i = 1;
+                    int i = 0;
+                    int notFound = 0;
                     foreach (ProdutosApi prod in produtosApi)
                     {
                         try
                         {
-                            if (i == 3) break;
+                            i++;
+                            ProdutoDAO produtoDAO = new ProdutoDAO();
+                            DataRowCollection retProd = produtoDAO.GetQuery($"Codigo = '{prod.Codigo}'").ReadAsCollection();
+
+                            if (retProd.Count == 0)
+                            {
+                                Console.WriteLine($"produto {i} com código {prod.Codigo} não encontrado.");
+                                notFound++;
+                                continue;
+                            }
+                            else
+                            {
+                                Console.WriteLine($"--> produto {i} com código {prod.Codigo} encontrado.");
+                            }
+
+
                             string title = $"Ajustando produto {i} de {produtosApi.Count}\r\n";
                             lblInfo.Text = title + "Atualizando produto";
                             await Task.Delay(10);
                             ClasseImpostoDAO classeImpostoDAO = new ClasseImpostoDAO();
-                            ClasseImpostoDAO ret =  classeImpostoDAO.GetClasseImposto(prod);
-
-                            string json = JsonSerializer.Serialize(ret, new JsonSerializerOptions { WriteIndented = true });
-                            Console.WriteLine(json);
+                            ClasseImpostoBanco ret = classeImpostoDAO.GetClasseImposto(prod);
 
                         }
                         catch (Exception ex)
@@ -123,15 +137,17 @@ namespace OriontaxSync.Classes
                             Console.WriteLine($"Erro ao processar produto {i}: {ex.Message}");
                             continue;
                         }
-                        finally
-                        {
-                            i++;
-                        }
+                        
+                    }
+
+                    if(notFound > 0)
+                    {
+                        Console.WriteLine($"Não encontrado produto {notFound} de {i}");
                     }
 
                     lblInfo.Text = "Finalizado...";
                     await Task.Delay(100);
-                    // Mostrar o resultado
+
                 }
             }
             catch (HttpRequestException ex)

@@ -3,7 +3,7 @@ using Microsoft.Data.SqlClient;
 
 namespace OriontaxSync.libs
 {
-    static class Connection
+    internal class Connection
     {
         public static SqlConnection con;
         public static SqlTransaction transaction;

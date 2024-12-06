@@ -79,6 +79,7 @@ namespace OriontaxSync
         private void ExitApp(object sender, EventArgs e)
         {
             notifyIcon.Visible = false; // Remove o ícone do tray
+            Connection.Close();
             Application.Exit();
         }
 
@@ -112,7 +113,7 @@ namespace OriontaxSync
                 lblAcao.Text = "Últ. ação: " + ConfigReader.GetConfigValue("Log", "ultima_acao");
                 lblData.Text = "Data ação: " + ConfigReader.GetConfigValue("Log", "data_acao");
                 Connection.Connect();
-                Logger.Log("Teste");
+                ConnectionConfig.Connect();
 
             }
             catch (Exception ex)

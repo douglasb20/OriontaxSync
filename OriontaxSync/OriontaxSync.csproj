@@ -167,6 +167,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ClasseImpostoBanco.cs" />
     <Compile Include="Classes\Logger.cs" />
     <Compile Include="Classes\LoggingHandler.cs" />
     <Compile Include="Classes\ProdutosBanco .cs" />
@@ -184,6 +185,7 @@
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
     <Compile Include="libs\ConfigReader.cs" />
+    <Compile Include="libs\ConnectionConfig.cs" />
     <Compile Include="libs\DAOSVR\Connection.cs" />
     <Compile Include="libs\DAOSVR\DefaultModel.cs" />
     <Compile Include="libs\DAOSVR\ClasseImpostoDAO.cs" />

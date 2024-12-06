@@ -1,6 +1,7 @@
-﻿using Salaros.Configuration;
+﻿using System;
 using System.IO;
-using System;
+using System.Windows.Forms;
+using Salaros.Configuration;
 
 
 namespace OriontaxSync.libs
@@ -10,6 +11,14 @@ namespace OriontaxSync.libs
         private static ConfigParser config;
         private static string filePath;
         public static string base_url = @"https://oriontax.f5sys.com.br/api/v1/test";
+
+        public static string caminho = Path.GetDirectoryName(Application.ExecutablePath);
+        public static string fileConfig = "config.db";
+        public static string pathConfig = Path.Combine(caminho, fileConfig);
+        public static void Connect()
+        {
+
+        }
 
         public static void LoadConfig(string fileName)
         {
