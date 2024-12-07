@@ -105,6 +105,7 @@ namespace OriontaxSync
             {
                 notifyIcon.Visible = true;
                 ConfigReader.LoadConfig(pathConfig);
+                ConfigReader.Connect();
                 lblTopBar.Text = "  " + titulo + " | OrintaxSync";
                 this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
                 lblVersion.Text = "Version: " + Application.ProductVersion.ToString();
@@ -113,11 +114,11 @@ namespace OriontaxSync
                 lblAcao.Text = "Últ. ação: " + ConfigReader.GetConfigValue("Log", "ultima_acao");
                 lblData.Text = "Data ação: " + ConfigReader.GetConfigValue("Log", "data_acao");
                 Connection.Connect();
-                ConnectionConfig.Connect();
 
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 if (Funcoes.ErrorMessage(ex.Message) == DialogResult.OK)
                 {
                     Application.Exit();

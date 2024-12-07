@@ -20,9 +20,13 @@ namespace OriontaxSync.libs
             SendMessage(frm.Handle, 0x112, 0xf012, 0);
         }
 
-
         private static string titulo = ConfigurationManager.AppSettings["appTitle"];
 
+        /// <summary>
+        /// Chama um alerta personalizado de erro
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns>Retorna uma caixa de messagem pré definido</returns>
         public static DialogResult ErrorMessage(string text)
         {
             return MessageBox.Show(text, titulo, MessageBoxButtons.OK, MessageBoxIcon.Error);
