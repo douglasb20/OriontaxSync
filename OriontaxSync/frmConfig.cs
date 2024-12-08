@@ -25,13 +25,7 @@ namespace OriontaxSync
 
         public void CloseConfig()
         {
-            ConfigReader.ReloadConfig();
             this.Dispose(true);
-        }
-
-        private void changeConfig(TextBox txt, string section, string config)
-        {
-            ConfigReader.SetConfigValue(section, config, txt.Text.Trim() );
         }
 
         private void lblConfigClose_Click(object sender, EventArgs e)
@@ -46,17 +40,44 @@ namespace OriontaxSync
 
         private void frmConfig_Load(object sender, EventArgs e)
         {
-            txtDbHost.Text = ConfigReader.GetConfigValue("Database", "dbhost").Trim();
-            txtDbUser.Text = ConfigReader.GetConfigValue("Database", "dbuser").Trim();
-            txtDbPwd.Text = ConfigReader.GetConfigValue("Database", "dbpwd").Trim();
-            txtDiaEnvios.Text = ConfigReader.GetConfigValue("Sistema", "dia_envio").Trim();
-            txtDiaReceb.Text = ConfigReader.GetConfigValue("Sistema", "dia_recebimento").Trim();
-            txtToken.Text = ConfigReader.GetConfigValue("Sistema", "token").Trim();
+            try
+            {
+
+                ToolTip tool = new ToolTip();
+                tool.SetToolTip(icoInfo, "Para ter multiplas datas de recebimento, use ponto e virgula(;)\r\nExemplo: 06;10;15");
+
+                // DATABASE
+                txtDbHost.Text = ConfigReader.GetConfigValue("dbhost").Trim();
+                txtDbUser.Text = ConfigReader.GetConfigValue("dbuser").Trim();
+                txtDbPwd.Text = Funcoes.Decrypt(ConfigReader.GetConfigValue("dbpwd")).Trim();
+
+                // SISTEMA
+                txtDiaEnvios.Text = ConfigReader.GetConfigValue("dia_envio").Trim();
+                txtDiaReceb.Text = ConfigReader.GetConfigValue("dia_recebimento").Trim();
+                txtCnpjCliente.Text = ConfigReader.GetConfigValue("cliente_cnpj").Trim();
+                txtNomeCliente.Text = ConfigReader.GetConfigValue("cliente_nome").Trim();
+                txtToken.Text = Funcoes.Decrypt(ConfigReader.GetConfigValue("token")).Trim();
+
+                // MAIL
+                txtMailHost.Text = ConfigReader.GetConfigValue("mail_host").Trim();
+                txtMailPort.Text = ConfigReader.GetConfigValue("mail_port").Trim();
+                txtMailUser.Text = ConfigReader.GetConfigValue("mail_user").Trim();
+                txtMailPass.Text = Funcoes.Decrypt(ConfigReader.GetConfigValue("mail_pwd")).Trim();
+                txtMailFrom.Text = ConfigReader.GetConfigValue("mail_from").Trim();
+                txtMailSuport.Text = ConfigReader.GetConfigValue("mail_suport").Trim();
+
+                
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private void btSaveConfig_Click(object sender, EventArgs e)
         {
-            if(txtDiaEnvios.Text == "" || txtDiaReceb.Text == "")
+            if (txtDiaEnvios.Text == "" || txtDiaReceb.Text == "")
             {
                 Funcoes.ErrorMessage("Dias não pode ficar vazio");
                 return;
@@ -71,44 +92,28 @@ namespace OriontaxSync
                 Funcoes.ErrorMessage("Dias não pode ser maior que 28 ou menor que 1");
                 return;
             }
-            ConfigReader.SaveConfig();
+
+            // DATABASE
+            ConfigReader.SetConfigValue("dbhost", txtDbHost.Text.Trim());
+            ConfigReader.SetConfigValue("dbuser", txtDbUser.Text.Trim());
+            ConfigReader.SetConfigValue("dbpwd", Funcoes.Encrypt(txtDbPwd.Text.Trim().ToLower()));
+
+            // SISTEMA
+            ConfigReader.SetConfigValue("dia_envio", txtDiaEnvios.Text.Trim());
+            ConfigReader.SetConfigValue("dia_recebimento", txtDiaReceb.Text.Trim());
+            ConfigReader.SetConfigValue("cliente_cnpj", txtCnpjCliente.Text.Trim());
+            ConfigReader.SetConfigValue("ciente_nome", txtNomeCliente.Text.Trim());
+            ConfigReader.SetConfigValue("token", Funcoes.Encrypt(txtToken.Text.Trim()));
+
+            // MAIL
+            ConfigReader.SetConfigValue("mail_host", txtMailHost.Text.Trim());
+            ConfigReader.SetConfigValue("mail_port", txtMailPort.Text.Trim());
+            ConfigReader.SetConfigValue("mail_user", txtMailUser.Text.Trim());
+            ConfigReader.SetConfigValue("mail_pwd", Funcoes.Encrypt( txtMailPass.Text.Trim().ToLower() ));
+            ConfigReader.SetConfigValue("mail_from", txtMailFrom.Text.Trim());
+            ConfigReader.SetConfigValue("mail_suport", txtMailSuport.Text.Trim());
+
             this.Dispose(true);
-        }
-
-        private void txtDbHost_TextChanged(object sender, EventArgs e)
-        {
-            changeConfig((TextBox)sender, "Database", "dbhost");
-        }
-
-        private void txtDbUser_TextChanged(object sender, EventArgs e)
-        {
-            changeConfig((TextBox)sender, "Database", "dbuser");
-        }
-
-        private void txtDbPwd_TextChanged(object sender, EventArgs e)
-        {
-            changeConfig((TextBox)sender, "Database", "dbpwd");
-        }
-
-        private void txtDiaReceb_TextChanged(object sender, EventArgs e)
-        {
-            TextBox txt = new TextBox();
-            string dia = ((TextBox)sender).Text != "" ? int.Parse(((TextBox)sender).Text).ToString() : "";
-            txt.Text = dia;
-            changeConfig(txt, "Sistema", "dia_recebimento");
-        }
-
-        private void txtDiaEnvios_TextChanged(object sender, EventArgs e)
-        {
-            TextBox txt = new TextBox();
-            string dia = ((TextBox)sender).Text != "" ? int.Parse(((TextBox)sender).Text).ToString() : "";
-            txt.Text = dia;
-            changeConfig(txt, "Sistema", "dia_envio");
-        }
-
-        private void txtToken_TextChanged(object sender, EventArgs e)
-        {
-            changeConfig((TextBox)sender, "Sistema", "token");
         }
 
         private void btnTestConn_Click(object sender, EventArgs e)

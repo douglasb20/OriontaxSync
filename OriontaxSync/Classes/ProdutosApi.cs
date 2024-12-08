@@ -76,7 +76,8 @@ namespace OriontaxSync.Classes
                 using (HttpClient client = new HttpClient())
                 {
                     lblInfo.Text = "";
-                    client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"Bearer {ConfigReader.GetConfigValue("Sistema", "token")}");
+                    client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"Bearer {Funcoes.Decrypt(ConfigReader.GetConfigValue("token"))}");
+                    List<ProdutosApi>prodNotFound = new List<ProdutosApi>();
 
                     lblInfo.Text = "Chamando Api da Oriontax...";
                     await Task.Delay(100);
@@ -111,18 +112,9 @@ namespace OriontaxSync.Classes
                         {
                             i++;
                             ProdutoDAO produtoDAO = new ProdutoDAO();
-                            DataRowCollection retProd = produtoDAO.GetQuery($"Codigo = '{prod.Codigo}'").ReadAsCollection();
+                            DataRowCollection retProd = produtoDAO.GetQuery($"Codigo = '{prod.Codigo}' OR Codigo_fabricante1 = '{prod.Codigo}' OR Codigo_fabricante1 = '{prod.CodigoBarras}'").ReadAsCollection();
 
-                            if (retProd.Count == 0)
-                            {
-                                Console.WriteLine($"produto {i} com código {prod.Codigo} não encontrado.");
-                                notFound++;
-                                continue;
-                            }
-                            else
-                            {
-                                Console.WriteLine($"--> produto {i} com código {prod.Codigo} encontrado.");
-                            }
+                            if (retProd.Count == 0) continue;
 
 
                             string title = $"Ajustando produto {i} de {produtosApi.Count}\r\n";
@@ -130,6 +122,13 @@ namespace OriontaxSync.Classes
                             await Task.Delay(10);
                             ClasseImpostoDAO classeImpostoDAO = new ClasseImpostoDAO();
                             ClasseImpostoBanco ret = classeImpostoDAO.GetClasseImposto(prod);
+
+                            if(ret == null)
+                            {
+                                notFound++;
+                                prodNotFound.Add(prod);
+                                continue;
+                            }
 
                         }
                         catch (Exception ex)
@@ -140,9 +139,13 @@ namespace OriontaxSync.Classes
                         
                     }
 
-                    if(notFound > 0)
+                    if(prodNotFound.Count > 0)
                     {
-                        Console.WriteLine($"Não encontrado produto {notFound} de {i}");
+                        string jsonContent = JsonSerializer.Serialize(prodNotFound, new JsonSerializerOptions { WriteIndented = true });
+                        Mail mail = new Mail();
+                        lblInfo.Text = $"Enviando email de classes não encontradas";
+                        await Task.Delay(100);
+                        mail.SendEmailHtml("Classes não encontradas", TemplateMail.JsonTemplate( jsonContent ));
                     }
 
                     lblInfo.Text = "Finalizado...";
@@ -172,7 +175,7 @@ namespace OriontaxSync.Classes
                 {
                     lblInfo.Text = "";
                     List<ProdutosApi> produtosApi = new List<ProdutosApi>();
-                    client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"Bearer {ConfigReader.GetConfigValue("Sistema", "token")}");
+                    client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"Bearer {Funcoes.Decrypt(ConfigReader.GetConfigValue("token"))}");
 
                     lblInfo.Text = "Consultando produtos no banco...";
                     await Task.Delay(100);

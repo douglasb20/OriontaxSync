@@ -1,17 +1,15 @@
-﻿using OriontaxSync.libs;
-using OriontaxSync.Classes;
+﻿using OriontaxSync.Classes;
+using OriontaxSync.libs;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.SQLite;
+using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
-using System.Text.Json;
 using System.Windows.Forms;
-using System.Threading.Tasks;
-using System.Net.Http;
-using System.Threading;
-using OriontaxSync.libs.DAOSVR;
+using System.Text.Json;
 
 namespace OriontaxSync
 {
@@ -104,15 +102,14 @@ namespace OriontaxSync
             try
             {
                 notifyIcon.Visible = true;
-                ConfigReader.LoadConfig(pathConfig);
                 ConfigReader.Connect();
                 lblTopBar.Text = "  " + titulo + " | OrintaxSync";
                 this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
                 lblVersion.Text = "Version: " + Application.ProductVersion.ToString();
                 tmr.Start();
                 string horaAtual = DateTime.Now.ToString("HH:mm:ss");
-                lblAcao.Text = "Últ. ação: " + ConfigReader.GetConfigValue("Log", "ultima_acao");
-                lblData.Text = "Data ação: " + ConfigReader.GetConfigValue("Log", "data_acao");
+                lblAcao.Text = "Últ. ação: " + ConfigReader.GetConfigValue("ultima_acao");
+                lblData.Text = "Data ação: " + ConfigReader.GetConfigValue("data_acao");
                 Connection.Connect();
 
             }
@@ -208,7 +205,7 @@ namespace OriontaxSync
 
         private async void btnReceiveProd_Click(object sender, EventArgs e)
         {
-            if (ConfigReader.GetConfigValue("Sistema", "token") == String.Empty)
+            if (ConfigReader.GetConfigValue("token") == String.Empty)
             {
                 Funcoes.ErrorMessage("Nenhum token foi definido nas configurações");
                 return;

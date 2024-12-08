@@ -2,12 +2,16 @@
 using System.Configuration;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
 using System.Windows.Forms;
 
 namespace OriontaxSync.libs
 {
     static class Funcoes
     {
+        private const string SecretKey = "9rv7rg9p3ox26vtr1i91p4j57gp5d6ja";
+        private const string SecretIv = "l0mticdy4rm9l472jstnfolseud929j4";
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
         private extern static void ReleaseCapture();
@@ -182,5 +186,98 @@ namespace OriontaxSync.libs
             }
         }
 
+        public static string Encrypt(string plainText)
+        {
+            try
+            {
+                byte[] key = GenerateKey(SecretKey);
+                byte[] iv = GenerateIV(SecretIv);
+
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = (key);
+                    aes.IV = (iv);
+                    aes.Mode = CipherMode.CBC;
+                    aes.Padding = PaddingMode.PKCS7;
+
+                    using (ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV))
+                    {
+                        byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
+                        byte[] cipherBytes = encryptor.TransformFinalBlock(plainBytes, 0, plainBytes.Length);
+
+                        return Base64UrlEncode(cipherBytes);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+        public static string Decrypt(string cipherText)
+        {
+            try
+            {
+                byte[] key = GenerateKey(SecretKey);
+                byte[] iv = GenerateIV(SecretIv);
+
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = key;
+                    aes.IV = iv;
+                    aes.Mode = CipherMode.CBC;
+                    aes.Padding = PaddingMode.PKCS7;
+
+                    using (ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
+                    {
+                        byte[] cipherBytes = Base64UrlDecode(cipherText);
+                        byte[] plainBytes = decryptor.TransformFinalBlock(cipherBytes, 0, cipherBytes.Length);
+
+                        return Encoding.UTF8.GetString(plainBytes);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+
+        private static string Base64UrlEncode(byte[] input)
+        {
+            string base64 = Convert.ToBase64String(input);
+            return base64.Replace("+", "-").Replace("/", "_").Replace("=", "");
+        }
+
+        private static byte[] Base64UrlDecode(string input)
+        {
+            string base64 = input.Replace("-", "+").Replace("_", "/");
+            switch (base64.Length % 4)
+            {
+                case 2: base64 += "=="; break;
+                case 3: base64 += "="; break;
+            }
+            return Convert.FromBase64String(base64);
+        }
+
+        private static byte[] GenerateKey(string secret)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                return sha256.ComputeHash(Encoding.UTF8.GetBytes(secret));
+            }
+        }
+        private static byte[] GenerateIV(string secretIv)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] fullHash = sha256.ComputeHash(Encoding.UTF8.GetBytes(secretIv));
+                byte[] iv = new byte[16];
+                Array.Copy(fullHash, iv, 16); // Pega os primeiros 16 bytes
+                return iv;
+            }
+        }
     }
 }

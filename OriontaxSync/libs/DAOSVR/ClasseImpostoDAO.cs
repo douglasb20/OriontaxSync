@@ -20,20 +20,29 @@ namespace OriontaxSync.libs.DAOSVR
             try
             {
 
-                string query =  "SELECT codigo, id, nome, ide FROM ClasseImposto WHERE status = 0" +
-                                " AND ide IN (SELECT ClasseImposto__Ide FROM ClasseImpostoOperacao" +
-                                " WHERE CONVERT(INT, IcmsCst) = @IcmsCst" +
-                                " AND Cfop__Codigo = @Cfop" +
-                                " AND IcmsPerc = @IcmsAliquota" +
-                                " AND PisCofinsTipo = @PisCst" +
-                                " AND PisPerc = @PisAliquota" +
-                                " AND CofinsPerc = @CofinsAliquota" +
+                string query =  @"
+                                    SELECT 
+                                        codigo
+                                        , id
+                                        , nome
+                                        , ide 
+                                    FROM   
+                                        ClasseImposto 
+                                    WHERE 
+                                        status = 0
+                                            AND ide IN (SELECT ClasseImposto__Ide FROM ClasseImpostoOperacao
+                                                        WHERE CONVERT(INT, IcmsCst) = @IcmsCst
+                                                        AND Cfop__Codigo = @Cfop
+                                                        AND IcmsPerc = @IcmsAliquota
+                                                        AND PisCofinsTipo = @PisCst
+                                                        AND PisPerc = @PisAliquota
+                                                        AND CofinsPerc = @CofinsAliquota" +
                                 (produtoApi.IcmsCst == 20 ?
                                     " AND IcmsPercDeson = @IcmsPercDeson "
                                     //"AND IcmsPercRedBc = @IcmsPercRedBc" 
                                     : "") +
-                                " AND Operacao__Codigo = 500" +
-                                " GROUP BY ClasseImposto__Ide)";
+                                @" AND Operacao__Codigo = 500
+                                 GROUP BY ClasseImposto__Ide)";
 
                 string FormatDecimal(decimal? value)
                 {

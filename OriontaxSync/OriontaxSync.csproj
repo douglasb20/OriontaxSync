@@ -45,9 +45,6 @@
     <Reference Include="Azure.Identity, Version=1.11.4.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
       <HintPath>..\packages\Azure.Identity.1.11.4\lib\netstandard2.0\Azure.Identity.dll</HintPath>
     </Reference>
-    <Reference Include="ConfigParser, Version=0.3.8.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Salaros.ConfigParser.0.3.8\lib\net45\ConfigParser.dll</HintPath>
-    </Reference>
     <Reference Include="FontAwesome.Sharp, Version=6.3.0.0, Culture=neutral, PublicKeyToken=d16d1e4e568ec10f, processorArchitecture=MSIL">
       <HintPath>..\packages\FontAwesome.Sharp.6.3.0\lib\net48\FontAwesome.Sharp.dll</HintPath>
     </Reference>
@@ -174,8 +171,10 @@
     <Compile Include="Classes\ClasseImpostoBanco.cs" />
     <Compile Include="Classes\Logger.cs" />
     <Compile Include="Classes\LoggingHandler.cs" />
+    <Compile Include="Classes\Mail.cs" />
     <Compile Include="Classes\ProdutosBanco .cs" />
     <Compile Include="Classes\ProdutosApi.cs" />
+    <Compile Include="Classes\TemplateMail.cs" />
     <Compile Include="frmConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -189,7 +188,6 @@
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
     <Compile Include="libs\ConfigReader.cs" />
-    <Compile Include="libs\ConnectionConfig.cs" />
     <Compile Include="libs\DAOSVR\Connection.cs" />
     <Compile Include="libs\DAOSVR\DefaultModel.cs" />
     <Compile Include="libs\DAOSVR\ClasseImpostoDAO.cs" />

@@ -9,9 +9,9 @@ namespace OriontaxSync.libs
         public static SqlTransaction transaction;
         public static void Connect()
         {
-            string host = ConfigReader.GetConfigValue("Database", "dbhost");
-            string dbuser = ConfigReader.GetConfigValue("Database", "dbuser");
-            string password = ConfigReader.GetConfigValue("Database", "dbpwd");
+            string host = ConfigReader.GetConfigValue("dbhost");
+            string dbuser = ConfigReader.GetConfigValue("dbuser");
+            string password = Funcoes.Decrypt(ConfigReader.GetConfigValue("dbpwd")).Trim();
 
 
             con = new SqlConnection(string.Format(@"Data Source={0};Initial Catalog=Etrade; User ID={1};Password={2};TrustServerCertificate=True;", host, dbuser, password));
