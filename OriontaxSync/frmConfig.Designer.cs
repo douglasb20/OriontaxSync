@@ -43,32 +43,32 @@
             this.txtDbHost = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.icoInfo = new FontAwesome.Sharp.IconPictureBox();
+            this.txtNomeCliente = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.txtCnpjCliente = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.txtToken = new System.Windows.Forms.TextBox();
             this.btnCancelCLose = new System.Windows.Forms.Button();
             this.btSaveConfig = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.txtMailSuport = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.txtMailFrom = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.txtMailPass = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.txtMailUser = new System.Windows.Forms.TextBox();
             this.txtMailPort = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.txtMailHost = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.txtMailPass = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.txtMailFrom = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.txtMailSuport = new System.Windows.Forms.TextBox();
-            this.txtCnpjCliente = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.txtNomeCliente = new System.Windows.Forms.TextBox();
-            this.label15 = new System.Windows.Forms.Label();
-            this.icoInfo = new FontAwesome.Sharp.IconPictureBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.icoInfo)).BeginInit();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -180,6 +180,7 @@
             this.txtDbPwd.PasswordChar = '*';
             this.txtDbPwd.Size = new System.Drawing.Size(225, 21);
             this.txtDbPwd.TabIndex = 12;
+            this.txtDbPwd.TextChanged += new System.EventHandler(this.Text_TextChanged);
             // 
             // label6
             // 
@@ -200,6 +201,7 @@
             this.txtDbUser.Name = "txtDbUser";
             this.txtDbUser.Size = new System.Drawing.Size(225, 21);
             this.txtDbUser.TabIndex = 10;
+            this.txtDbUser.TextChanged += new System.EventHandler(this.Text_TextChanged);
             // 
             // label5
             // 
@@ -220,6 +222,7 @@
             this.txtDbHost.Name = "txtDbHost";
             this.txtDbHost.Size = new System.Drawing.Size(225, 21);
             this.txtDbHost.TabIndex = 8;
+            this.txtDbHost.TextChanged += new System.EventHandler(this.Text_TextChanged);
             // 
             // label4
             // 
@@ -253,6 +256,63 @@
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Sistema";
+            // 
+            // icoInfo
+            // 
+            this.icoInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.icoInfo.BackColor = System.Drawing.Color.Transparent;
+            this.icoInfo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.icoInfo.IconChar = FontAwesome.Sharp.IconChar.CircleInfo;
+            this.icoInfo.IconColor = System.Drawing.Color.White;
+            this.icoInfo.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.icoInfo.IconSize = 14;
+            this.icoInfo.Location = new System.Drawing.Point(119, 70);
+            this.icoInfo.Name = "icoInfo";
+            this.icoInfo.Padding = new System.Windows.Forms.Padding(2, 2, 0, 0);
+            this.icoInfo.Size = new System.Drawing.Size(16, 16);
+            this.icoInfo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.icoInfo.TabIndex = 29;
+            this.icoInfo.TabStop = false;
+            // 
+            // txtNomeCliente
+            // 
+            this.txtNomeCliente.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtNomeCliente.Location = new System.Drawing.Point(6, 176);
+            this.txtNomeCliente.Name = "txtNomeCliente";
+            this.txtNomeCliente.Size = new System.Drawing.Size(225, 21);
+            this.txtNomeCliente.TabIndex = 11;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label15.ForeColor = System.Drawing.Color.White;
+            this.label15.Location = new System.Drawing.Point(6, 158);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(90, 17);
+            this.label15.TabIndex = 10;
+            this.label15.Text = "Nome cliente";
+            // 
+            // txtCnpjCliente
+            // 
+            this.txtCnpjCliente.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtCnpjCliente.Location = new System.Drawing.Point(6, 131);
+            this.txtCnpjCliente.Name = "txtCnpjCliente";
+            this.txtCnpjCliente.Size = new System.Drawing.Size(225, 21);
+            this.txtCnpjCliente.TabIndex = 9;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.ForeColor = System.Drawing.Color.White;
+            this.label14.Location = new System.Drawing.Point(6, 113);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(88, 17);
+            this.label14.TabIndex = 8;
+            this.label14.Text = "CNPJ cliente";
             // 
             // label7
             // 
@@ -329,6 +389,64 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Sistema";
             // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.ForeColor = System.Drawing.Color.White;
+            this.label13.Location = new System.Drawing.Point(6, 248);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(112, 17);
+            this.label13.TabIndex = 12;
+            this.label13.Text = "Destinatário Log";
+            // 
+            // txtMailSuport
+            // 
+            this.txtMailSuport.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtMailSuport.Location = new System.Drawing.Point(6, 268);
+            this.txtMailSuport.Name = "txtMailSuport";
+            this.txtMailSuport.Size = new System.Drawing.Size(225, 21);
+            this.txtMailSuport.TabIndex = 13;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.ForeColor = System.Drawing.Color.White;
+            this.label12.Location = new System.Drawing.Point(6, 201);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(118, 17);
+            this.label12.TabIndex = 10;
+            this.label12.Text = "Nome Remetente";
+            // 
+            // txtMailFrom
+            // 
+            this.txtMailFrom.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtMailFrom.Location = new System.Drawing.Point(6, 221);
+            this.txtMailFrom.Name = "txtMailFrom";
+            this.txtMailFrom.Size = new System.Drawing.Size(225, 21);
+            this.txtMailFrom.TabIndex = 11;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.ForeColor = System.Drawing.Color.White;
+            this.label8.Location = new System.Drawing.Point(6, 156);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(87, 17);
+            this.label8.TabIndex = 8;
+            this.label8.Text = "Email Senha";
+            // 
+            // txtMailPass
+            // 
+            this.txtMailPass.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtMailPass.Location = new System.Drawing.Point(6, 176);
+            this.txtMailPass.Name = "txtMailPass";
+            this.txtMailPass.PasswordChar = '*';
+            this.txtMailPass.Size = new System.Drawing.Size(225, 21);
+            this.txtMailPass.TabIndex = 9;
+            // 
             // label9
             // 
             this.label9.AutoSize = true;
@@ -386,121 +504,6 @@
             this.label11.TabIndex = 4;
             this.label11.Text = "SMTP Port";
             // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.ForeColor = System.Drawing.Color.White;
-            this.label8.Location = new System.Drawing.Point(6, 156);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(87, 17);
-            this.label8.TabIndex = 8;
-            this.label8.Text = "Email Senha";
-            // 
-            // txtMailPass
-            // 
-            this.txtMailPass.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtMailPass.Location = new System.Drawing.Point(6, 176);
-            this.txtMailPass.Name = "txtMailPass";
-            this.txtMailPass.PasswordChar = '*';
-            this.txtMailPass.Size = new System.Drawing.Size(225, 21);
-            this.txtMailPass.TabIndex = 9;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.ForeColor = System.Drawing.Color.White;
-            this.label12.Location = new System.Drawing.Point(6, 201);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(118, 17);
-            this.label12.TabIndex = 10;
-            this.label12.Text = "Nome Remetente";
-            // 
-            // txtMailFrom
-            // 
-            this.txtMailFrom.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtMailFrom.Location = new System.Drawing.Point(6, 221);
-            this.txtMailFrom.Name = "txtMailFrom";
-            this.txtMailFrom.Size = new System.Drawing.Size(225, 21);
-            this.txtMailFrom.TabIndex = 11;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.ForeColor = System.Drawing.Color.White;
-            this.label13.Location = new System.Drawing.Point(6, 248);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(112, 17);
-            this.label13.TabIndex = 12;
-            this.label13.Text = "Destinatário Log";
-            // 
-            // txtMailSuport
-            // 
-            this.txtMailSuport.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtMailSuport.Location = new System.Drawing.Point(6, 268);
-            this.txtMailSuport.Name = "txtMailSuport";
-            this.txtMailSuport.Size = new System.Drawing.Size(225, 21);
-            this.txtMailSuport.TabIndex = 13;
-            // 
-            // txtCnpjCliente
-            // 
-            this.txtCnpjCliente.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtCnpjCliente.Location = new System.Drawing.Point(6, 131);
-            this.txtCnpjCliente.Name = "txtCnpjCliente";
-            this.txtCnpjCliente.Size = new System.Drawing.Size(225, 21);
-            this.txtCnpjCliente.TabIndex = 9;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.ForeColor = System.Drawing.Color.White;
-            this.label14.Location = new System.Drawing.Point(6, 113);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(88, 17);
-            this.label14.TabIndex = 8;
-            this.label14.Text = "CNPJ cliente";
-            // 
-            // txtNomeCliente
-            // 
-            this.txtNomeCliente.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtNomeCliente.Location = new System.Drawing.Point(6, 176);
-            this.txtNomeCliente.Name = "txtNomeCliente";
-            this.txtNomeCliente.Size = new System.Drawing.Size(225, 21);
-            this.txtNomeCliente.TabIndex = 11;
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label15.ForeColor = System.Drawing.Color.White;
-            this.label15.Location = new System.Drawing.Point(6, 158);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(90, 17);
-            this.label15.TabIndex = 10;
-            this.label15.Text = "Nome cliente";
-            // 
-            // icoInfo
-            // 
-            this.icoInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.icoInfo.BackColor = System.Drawing.Color.Transparent;
-            this.icoInfo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.icoInfo.IconChar = FontAwesome.Sharp.IconChar.CircleInfo;
-            this.icoInfo.IconColor = System.Drawing.Color.White;
-            this.icoInfo.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.icoInfo.IconSize = 16;
-            this.icoInfo.Location = new System.Drawing.Point(119, 68);
-            this.icoInfo.Name = "icoInfo";
-            this.icoInfo.Padding = new System.Windows.Forms.Padding(2, 2, 0, 0);
-            this.icoInfo.Size = new System.Drawing.Size(18, 18);
-            this.icoInfo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.icoInfo.TabIndex = 29;
-            this.icoInfo.TabStop = false;
-            // 
             // frmConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -523,9 +526,9 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.icoInfo)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.icoInfo)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -5,7 +5,7 @@ namespace OriontaxSync.libs
 {
     internal class Connection
     {
-        public static SqlConnection con;
+        public static SqlConnection con = new SqlConnection();
         public static SqlTransaction transaction;
         public static void Connect()
         {
@@ -35,11 +35,11 @@ namespace OriontaxSync.libs
 
             }catch(SqlException ex)
             {
-                Funcoes.ErrorMessage(ex.Message);
+                throw ex;
 
             }catch(Exception ex)
             {
-                Funcoes.ErrorMessage(ex.Message);
+                throw ex;
             }
         }
     }

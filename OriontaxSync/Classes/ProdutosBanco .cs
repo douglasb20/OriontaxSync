@@ -1,8 +1,5 @@
-﻿using OriontaxSync.libs;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Text.Json.Serialization;
-using System.Windows.Forms;
 
 namespace OriontaxSync.Classes
 {

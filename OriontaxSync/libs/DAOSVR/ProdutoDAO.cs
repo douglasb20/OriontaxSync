@@ -81,5 +81,17 @@ namespace OriontaxSync.libs.DAOSVR
                 return null;
             }
         }
+
+        public void AtualizaRecebidoProduto(string codigo, ProdutosApi produtoApi, ClasseImpostoBanco classe)
+        {
+            var bindUpdateProd = new Dictionary<string, dynamic> {
+                { "ClasseImposto__Ide", classe.Ide.ToString()},
+                { "Beneficio_UF", produtoApi.CBenef.ToString()}
+            };
+
+            Console.WriteLine($"Alterando produto Codigo {codigo} com Classe IDE {classe.Ide}");
+            
+            this.Update(bindUpdateProd, $"Codigo='{codigo}'");
+        }
     }
 }

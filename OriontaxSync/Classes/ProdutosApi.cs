@@ -3,6 +3,7 @@ using OriontaxSync.libs.DAOSVR;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -116,19 +117,20 @@ namespace OriontaxSync.Classes
 
                             if (retProd.Count == 0) continue;
 
-
                             string title = $"Ajustando produto {i} de {produtosApi.Count}\r\n";
                             lblInfo.Text = title + "Atualizando produto";
                             await Task.Delay(10);
                             ClasseImpostoDAO classeImpostoDAO = new ClasseImpostoDAO();
-                            ClasseImpostoBanco ret = classeImpostoDAO.GetClasseImposto(prod);
+                            ClasseImpostoBanco retClasse = classeImpostoDAO.GetClasseImposto(prod);
 
-                            if(ret == null)
+                            if(retClasse == null)
                             {
                                 notFound++;
                                 prodNotFound.Add(prod);
                                 continue;
                             }
+
+                            produtoDAO.AtualizaRecebidoProduto(retProd[0]["Codigo"].ToString(), prod, retClasse);
 
                         }
                         catch (Exception ex)
@@ -141,15 +143,14 @@ namespace OriontaxSync.Classes
 
                     if(prodNotFound.Count > 0)
                     {
-                        string jsonContent = JsonSerializer.Serialize(prodNotFound, new JsonSerializerOptions { WriteIndented = true });
                         Mail mail = new Mail();
                         lblInfo.Text = $"Enviando email de classes não encontradas";
-                        await Task.Delay(100);
-                        mail.SendEmailHtml("Classes não encontradas", TemplateMail.JsonTemplate( jsonContent ));
+                        await Task.Delay(10);
+                        mail.SendEmailHtml("Classes não encontradas", TemplateMail.TableTemplate("Não foi possível encontrar classe de imposto com os seguintes atributos", prodNotFound));
                     }
 
                     lblInfo.Text = "Finalizado...";
-                    await Task.Delay(100);
+                    await Task.Delay(10);
 
                 }
             }
@@ -174,7 +175,6 @@ namespace OriontaxSync.Classes
                 using (HttpClient client = new HttpClient())
                 {
                     lblInfo.Text = "";
-                    List<ProdutosApi> produtosApi = new List<ProdutosApi>();
                     client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"Bearer {Funcoes.Decrypt(ConfigReader.GetConfigValue("token"))}");
 
                     lblInfo.Text = "Consultando produtos no banco...";
@@ -188,32 +188,27 @@ namespace OriontaxSync.Classes
                     lblInfo.Text = "Tratando produtos...";
                     await Task.Delay(100);
 
-                    foreach (var produtoBanco in produtos)
+                    List<ProdutosApi> produtosApi = produtos.Select(row => new ProdutosApi
                     {
-                        ProdutosApi prodApi = new ProdutosApi
-                        {
-                            Codigo = produtoBanco.Codigo,
-                            CodigoBarras = produtoBanco.Ean,
-                            Ncm = produtoBanco.Ncm,
-                            Descricao = produtoBanco.Descricao,
-                            Cest = produtoBanco.Cest,
-                            Cfop = produtoBanco.Cfop,
-                            IcmsCst = produtoBanco.CstCsosn,
-                            IcmsAliquota = produtoBanco.IcmsAliq,
-                            IcmsAliquotaReduzida = produtoBanco.RedIcms,
-                            RedBcDe = "0.0", // Valor padrão
-                            RedBcPara = "100", // Valor padrão
-                            CBenef = string.Empty, // Valor padrão
-                            Protege = 0, // Valor padrão
-                            PisCst = produtoBanco.PisCofinsCst,
-                            PisAliquota = produtoBanco.PisPerc,
-                            CofinsCst = produtoBanco.PisCofinsCst,
-                            CofinsAliquota = produtoBanco.CofinsPerc,
-                            NaturezaReceita = "101" // Valor padrão
-                        };
-
-                        produtosApi.Add(prodApi);
-                    }
+                        Codigo = row.Codigo,
+                        CodigoBarras = row.Ean,
+                        Ncm = row.Ncm,
+                        Descricao = row.Descricao,
+                        Cest = row.Cest,
+                        Cfop = row.Cfop,
+                        IcmsCst = row.CstCsosn,
+                        IcmsAliquota = row.IcmsAliq,
+                        IcmsAliquotaReduzida = row.RedIcms,
+                        RedBcDe = "0.0", // Valor padrão
+                        RedBcPara = "100", // Valor padrão
+                        CBenef = string.Empty, // Valor padrão
+                        Protege = 0, // Valor padrão
+                        PisCst = row.PisCofinsCst,
+                        PisAliquota = row.PisPerc,
+                        CofinsCst = row.PisCofinsCst,
+                        CofinsAliquota = row.CofinsPerc,
+                        NaturezaReceita = "101" // Valor padrão
+                    }).ToList();
 
                     // Serializar a lista de produtos para JSON
                     string jsonProdutos = JsonSerializer.Serialize(produtosApi);

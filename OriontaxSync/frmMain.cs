@@ -3,13 +3,12 @@ using OriontaxSync.libs;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SQLite;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Text.Json;
 
 namespace OriontaxSync
 {
@@ -28,7 +27,6 @@ namespace OriontaxSync
             InitializeComponent();
             InitializeSystray();
             this.Paint += new PaintEventHandler(Element_Paint);
-            this.Opacity = 0;
         }
 
         private void InitializeSystray()
@@ -58,7 +56,6 @@ namespace OriontaxSync
             this.Show();
             this.WindowState = FormWindowState.Normal; // Restaura o estado da janela
             notifyIcon.Visible = false;
-            this.Opacity = 1;
         }
 
         // Sobrescrever o evento de fechamento do formulário
@@ -97,19 +94,36 @@ namespace OriontaxSync
             this.Region = new Region(forma);
         }
 
-        private void frmMain_Load(object sender, EventArgs e)
+        private async void frmMain_Load(object sender, EventArgs e)
         {
             try
             {
                 notifyIcon.Visible = true;
                 ConfigReader.Connect();
-                lblTopBar.Text = "  " + titulo + " | OrintaxSync";
                 this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
+
+                lblTopBar.Text = "  " + titulo + " | OrintaxSync";
                 lblVersion.Text = "Version: " + Application.ProductVersion.ToString();
-                tmr.Start();
-                string horaAtual = DateTime.Now.ToString("HH:mm:ss");
                 lblAcao.Text = "Últ. ação: " + ConfigReader.GetConfigValue("ultima_acao");
                 lblData.Text = "Data ação: " + ConfigReader.GetConfigValue("data_acao");
+                Console.WriteLine(Connection.con.State);
+                if (ConfigReader.GetConfigValue("primeiro_acesso") == "0")
+                {
+
+                    frmConfig frmConfig = new frmConfig();
+                    await Task.Delay(300);
+
+                    frmConfig.ShowDialog(); // Mostra o formulário de configuração como modal
+                    if (frmConfig.DialogResult == DialogResult.Cancel)
+                    {
+                        // Se o usuário fechar a configuração sem salvar, opcionalmente sair do app
+                        Application.Exit();
+                        return;
+                    }
+
+                    return;
+                }
+
                 Connection.Connect();
 
             }
@@ -193,7 +207,10 @@ namespace OriontaxSync
 
         private void frmMain_Shown(object sender, EventArgs e)
         {
-            this.Hide();
+            if (ConfigReader.GetConfigValue("primeiro_acesso") == "1")
+            {
+                this.Hide();
+            }
         }
 
         private void LimpaLabel(object sender, EventArgs e)
@@ -208,6 +225,12 @@ namespace OriontaxSync
             if (ConfigReader.GetConfigValue("token") == String.Empty)
             {
                 Funcoes.ErrorMessage("Nenhum token foi definido nas configurações");
+                return;
+            }
+
+            if (ConfigReader.GetConfigValue("cliente_nome") == String.Empty || ConfigReader.GetConfigValue("cliente_cnpj") == String.Empty)
+            {
+                Funcoes.ErrorMessage("Obrigatório informar cliente e/ou cnpj nas configurações.");
                 return;
             }
 

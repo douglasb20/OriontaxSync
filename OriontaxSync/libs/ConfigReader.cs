@@ -50,22 +50,26 @@ namespace OriontaxSync.libs
                     Console.WriteLine("Tabela criada ou já existente.");
                 }
 
-                string createValues = @"
+                string createValues = $@"
                     insert into config(key, value) 
                     values('dbhost', '127.0.0.1'),
-                    ('dbpwd', 'dbpwd'),
+                    ('dbpwd', '{Funcoes.Encrypt("senha")}'),
                     ('dbuser', 'sa'),
                     ('dia_envio', '28'),
                     ('dia_recebimento', '06'),
-                    ('token', 'b22e5ab4-f278-49ff-8f7e-e7a94f726601'),
-                    ('ultima_acao', 'Envio'),
-                    ('data_acao', '04/12/2024 16:29:18'),
+                    ('token', ''),
+                    ('ultima_acao', 'Nenhum'),
+                    ('data_acao', '01/01/1900 00:00:00'),
                     ('mail_host', ''),
                     ('mail_port', '587'),
                     ('mail_user', ''),
                     ('mail_pwd', ''),
-                    ('mail_from', '');
-                    
+                    ('mail_from', ''),
+                    ('mail_suport', ''),
+                    ('cliente_cnpj', ''),
+                    ('cliente_nome', ''),
+                    ('primeiro_acesso', '0')
+                    ;
                 ";
                 using (var createConfigValues = new SQLiteCommand(createValues, con))
                 {
@@ -78,7 +82,6 @@ namespace OriontaxSync.libs
 
         public static void SetConfigValue(string key, string value)
         {
-            //config.SetValue(section, key, value);
             SQLiteCommand cmd = new SQLiteCommand("UPDATE config SET value=@Value WHERE key=@Key", con);
             cmd.Parameters.AddWithValue("@Key", key.ToLower());
             cmd.Parameters.AddWithValue("@Value", value);

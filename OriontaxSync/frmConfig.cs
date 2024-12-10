@@ -13,6 +13,7 @@ namespace OriontaxSync
 {
     public partial class frmConfig : Form
     {
+        public static ToolTip tool = new ToolTip { ShowAlways = true, InitialDelay = 200 };
         public frmConfig()
         {
             InitializeComponent();
@@ -25,7 +26,7 @@ namespace OriontaxSync
 
         public void CloseConfig()
         {
-            this.Dispose(true);
+            this.Close();
         }
 
         private void lblConfigClose_Click(object sender, EventArgs e)
@@ -43,7 +44,6 @@ namespace OriontaxSync
             try
             {
 
-                ToolTip tool = new ToolTip();
                 tool.SetToolTip(icoInfo, "Para ter multiplas datas de recebimento, use ponto e virgula(;)\r\nExemplo: 06;10;15");
 
                 // DATABASE
@@ -66,8 +66,14 @@ namespace OriontaxSync
                 txtMailFrom.Text = ConfigReader.GetConfigValue("mail_from").Trim();
                 txtMailSuport.Text = ConfigReader.GetConfigValue("mail_suport").Trim();
 
-                
-
+                if (ConfigReader.GetConfigValue("primeiro_acesso") == "1")
+                {
+                    btSaveConfig.Enabled = true;
+                }
+                else
+                {
+                    this.MouseMove += Form_MouseMove; // Detecta o movimento do mouse
+                }
             }
             catch (Exception ex)
             {
@@ -93,6 +99,12 @@ namespace OriontaxSync
                 return;
             }
 
+            if (txtNomeCliente.Text == string.Empty || txtCnpjCliente.Text == string.Empty)
+            {
+                Funcoes.ErrorMessage("Obrigatório informar cliente e/ou cnpj nas configurações.");
+                return;
+            }
+
             // DATABASE
             ConfigReader.SetConfigValue("dbhost", txtDbHost.Text.Trim());
             ConfigReader.SetConfigValue("dbuser", txtDbUser.Text.Trim());
@@ -109,17 +121,51 @@ namespace OriontaxSync
             ConfigReader.SetConfigValue("mail_host", txtMailHost.Text.Trim());
             ConfigReader.SetConfigValue("mail_port", txtMailPort.Text.Trim());
             ConfigReader.SetConfigValue("mail_user", txtMailUser.Text.Trim());
-            ConfigReader.SetConfigValue("mail_pwd", Funcoes.Encrypt( txtMailPass.Text.Trim().ToLower() ));
+            ConfigReader.SetConfigValue("mail_pwd", Funcoes.Encrypt(txtMailPass.Text.Trim().ToLower()));
             ConfigReader.SetConfigValue("mail_from", txtMailFrom.Text.Trim());
             ConfigReader.SetConfigValue("mail_suport", txtMailSuport.Text.Trim());
 
-            this.Dispose(true);
+            
+            if (ConfigReader.GetConfigValue("primeiro_acesso") == "0")
+            {
+                ConfigReader.SetConfigValue("primeiro_acesso", "1");
+                this.DialogResult = DialogResult.OK;
+            }
+            this.Close();
+
         }
 
         private void btnTestConn_Click(object sender, EventArgs e)
         {
-            Connection.TesteConn(txtDbHost.Text, txtDbUser.Text, txtDbPwd.Text);
-            Funcoes.ChamaAlerta("Conexão aberta com sucesso");
+            try
+            {
+                Connection.TesteConn(txtDbHost.Text, txtDbUser.Text, txtDbPwd.Text);
+                Funcoes.ChamaAlerta("Conexão aberta com sucesso");
+                btSaveConfig.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                Funcoes.ErrorMessage(ex.Message);
+                btSaveConfig.Enabled = false;
+            }
+        }
+
+        private void Text_TextChanged(object sender, EventArgs e)
+        {
+            btSaveConfig.Enabled = false;
+        }
+
+        private void Form_MouseMove(object sender, MouseEventArgs e)
+        {
+            // Verifica se o mouse está sobre o botão desabilitado
+            if (!btSaveConfig.Enabled && btSaveConfig.Bounds.Contains(this.PointToClient(Cursor.Position)))
+            {
+                tool.Show("Faça um teste de conexão para habilitar este botão", btSaveConfig, btSaveConfig.Width / 2, btSaveConfig.Height / 2);
+            }
+            else
+            {
+                tool.Hide(btSaveConfig); // Oculta o ToolTip quando o mouse não estiver sobre o botão
+            }
         }
     }
 }

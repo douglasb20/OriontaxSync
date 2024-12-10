@@ -271,6 +271,7 @@ namespace OriontaxSync.libs.DAOSVR
                 throw e;
             }
         }
+
         public void CloseConnection()
         {
             con.Close();
